@@ -33,6 +33,23 @@ fn main() -> ExitCode {
     }
   };
 
+  // Handle self-update options
+  if cli.check_update {
+    if let Err(e) = devclean::updater::AppUpdater::check_latest() {
+      eprintln!("Error: {e}");
+      return ExitCode::from(e.exit_code() as u8);
+    }
+    return ExitCode::SUCCESS;
+  }
+
+  if cli.update {
+    if let Err(e) = devclean::updater::AppUpdater::update(cli.yes) {
+      eprintln!("Error: {e}");
+      return ExitCode::from(e.exit_code() as u8);
+    }
+    return ExitCode::SUCCESS;
+  }
+
   let projects = Project::discover(&target_path, cli.git_only);
   if projects.is_empty() {
     println!("No projects found at {:?}", target_path);

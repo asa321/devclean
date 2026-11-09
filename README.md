@@ -122,14 +122,21 @@ devclean --clean
 devclean --clean --yes
 ```
 
-### 4. JSON形式での出力 (--format json)
-外部ツールやCIと連携可能な RFC 8259 準拠のJSONを出力します。
+### 5. セルフアップデート (--check-update / --update)
+GitHub Releases の最新バージョンを確認し、実行中バイナリを自動更新できます。
 
 ```bash
-devclean --format json
+# 最新バージョンの確認のみ
+devclean --check-update
+
+# 最新バージョンへアップデート（対話確認あり）
+devclean --update
+
+# 対話確認を省略してアップデート
+devclean --update --yes
 ```
 
-※ `--format json --clean` で実行する場合は、安全ガードのため `--yes` が必須となります。
+※ Private リポジトリの場合は、環境変数 `GITHUB_TOKEN` または `DEV_CLEAN_GITHUB_TOKEN` に Personal Access Token を設定してください。
 
 ---
 
@@ -153,6 +160,8 @@ devclean --format json
 | `--min-size <SIZE>` | 最小ファイルサイズ（例: 10MB, 1GB） |
 | `--max-size <SIZE>` | 最大ファイルサイズ |
 | `--max-operations <N>` | 実行操作数の上限（超過時はclean全体を中止） |
+| `--check-update` | GitHub Releases の最新バージョンを確認 |
+| `--update` | 最新バージョンへのセルフアップデートを実行 |
 | `--format <FORMAT>` | `text` または `json` |
 | `-v, --verbose` | 詳細表示 |
 | `-q, --quiet` | 最小限の表示 |

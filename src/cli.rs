@@ -103,12 +103,29 @@ pub struct Cli {
   /// Minimal quiet output
   #[arg(short = 'q', long = "quiet")]
   pub quiet: bool,
+
+  /// Check for latest release on GitHub
+  #[arg(long = "check-update")]
+  pub check_update: bool,
+
+  /// Self-update devclean binary to the latest release
+  #[arg(long = "update")]
+  pub update: bool,
 }
 
 impl Cli {
   /// Resolves target directory and validates CLI options against safety rules.
   pub fn validate_and_resolve(&self) -> Result<PathBuf, crate::error::DevCleanError> {
-    // 1. Resolve path: positional argument takes precedence over -p flag
+    // 0. Update modes exclusivity
+    if self.check_update || self.update {
+      if self.clean || self.scan || self.dry_run {
+        return Err(crate::error::DevCleanError::Cli(
+          "Cannot combine update options (--check-update, --update) with clean/scan/dry-run modes"
+            .to_string(),
+        ));
+      }
+      return Ok(PathBuf::from("."));
+    }
     let target_path = self
       .path
       .clone()

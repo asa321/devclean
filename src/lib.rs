@@ -6,3 +6,4 @@ pub mod filter;
 pub mod git;
 pub mod output;
 pub mod scanner;
+pub mod updater;
