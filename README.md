@@ -20,18 +20,71 @@
 
 ## インストール & ビルド
 
-### 必要要件
+### 1. リリースバイナリのダウンロード（推奨）
+
+[GitHub Releases](https://github.com/asa321/devclean/releases) からお使いのOSに応じたアーカイブをダウンロードして解凍し、PATHの通ったディレクトリへ配置してください。
+
+#### Windows
+1. `devclean-windows-x86_64.zip` をダウンロードして解凍します。
+2. `devclean.exe` を任意のフォルダ（例: `C:\Tools\devclean`）に配置します。
+3. ユーザー環境変数の `PATH` に上記フォルダを追加します。
+   - **PowerShellでの一時追加（現在のセッションのみ）**:
+     ```powershell
+     $env:PATH += ";C:\Tools\devclean"
+     ```
+   - **恒久的な追加（ユーザー環境変数）**:
+     ```powershell
+     [Environment]::SetEnvironmentVariable(
+       "Path",
+       [Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Tools\devclean",
+       "User"
+     )
+     ```
+4. 新しいターミナルを開き、`devclean --version` が実行できることを確認します。
+
+#### macOS
+1. アーカイブをダウンロードして解凍します。
+   - Apple Silicon (M1/M2/M3等): `devclean-macos-arm64.tar.gz`
+   - Intel Mac: `devclean-macos-x86_64.tar.gz`
+2. 解凍した `devclean` バイナリを `/usr/local/bin`（または `~/.local/bin`）へ移動し、実行権限を付与します。
+   ```bash
+   tar -xzvf devclean-macos-arm64.tar.gz
+   chmod +x devclean
+   sudo mv devclean /usr/local/bin/
+   ```
+3. 初回実行時に開発元未確認の警告が出る場合は、以下を実行して隔離属性を解除してください。
+   ```bash
+   xattr -d com.apple.quarantine /usr/local/bin/devclean
+   ```
+4. `devclean --version` で動作確認します。
+
+#### Linux
+1. `devclean-linux-x86_64.tar.gz` をダウンロードして解凍します。
+2. 解凍した `devclean` バイナリを `/usr/local/bin`（または `~/.local/bin`）へ配置します。
+   ```bash
+   tar -xzvf devclean-linux-x86_64.tar.gz
+   chmod +x devclean
+   sudo mv devclean /usr/local/bin/
+   ```
+   ※ `~/.local/bin` に配置する場合は、`~/.bashrc` や `~/.zshrc` に `export PATH="$HOME/.local/bin:$PATH"` を追加してください。
+3. `devclean --version` で動作確認します。
+
+---
+
+### 2. ソースコードからビルド
+
+#### 必要要件
 - Rust 1.75+ (stable)
 - Git (CLIがPATHに通っていること)
 
 ```bash
 # クローンとビルド
-git clone https://github.com/your-org/devclean.git
+git clone https://github.com/asa321/devclean.git
 cd devclean
 cargo build --release
 ```
 
-バイナリは `target/release/devclean` に生成されます。
+ビルド完了後、実行バイナリは `target/release/devclean`（Windowsは `target/release/devclean.exe`）に出力されます。上記と同様にPATHの通ったディレクトリへコピーしてご使用ください。
 
 ---
 
