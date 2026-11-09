@@ -1,0 +1,50 @@
+# ==========================================
+# devclean 保護対象パターン定義ファイル
+# ここに記述されたパターンに一致するファイルは
+# 削除候補から除外され、ディレクトリ集約からも保護されます。
+# 空行および '#' で始まる行はコメントとして無視されます。
+# ==========================================
+
+# 環境変数・シークレット設定
+.env
+.env.*
+*.env
+local.settings.json
+secrets.*
+.memo
+.memo.md
+
+
+# 秘密鍵・認証トークン・証明書
+id_rsa*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+*secret*
+
+# データベースファイル・ダンプ
+*.sqlite3
+*.db
+*.dump
+dump-*.sql
+
+# バックアップ・一時メモ
+*.bak
+*.orig
+
+# Cloudflare
+.wrangler/
+wrangler.json
+wrangler json.remote
+wrangler json.local
+worker-configuration.d.ts
+
+# 保護対象ディレクトリ（末尾にスラッシュまたはフォルダ名）
+# vendor/
+# assets/
+# fixtures/
+.back/
+back/
+data/

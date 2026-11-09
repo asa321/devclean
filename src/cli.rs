@@ -111,6 +111,14 @@ pub struct Cli {
   /// Self-update devclean binary to the latest release
   #[arg(long = "update")]
   pub update: bool,
+
+  /// Path to custom protection rules file (e.g. .devclean-ignore)
+  #[arg(long = "config", value_name = "FILE")]
+  pub config: Option<PathBuf>,
+
+  /// Do not load external protection rules (.devclean-ignore)
+  #[arg(long = "no-config")]
+  pub no_config: bool,
 }
 
 impl Cli {
@@ -141,6 +149,11 @@ impl Cli {
     if self.scan && self.clean {
       return Err(crate::error::DevCleanError::Cli(
         "Cannot specify both --scan and --clean".to_string(),
+      ));
+    }
+    if self.no_config && self.config.is_some() {
+      return Err(crate::error::DevCleanError::Cli(
+        "Cannot specify both --config and --no-config".to_string(),
       ));
     }
 

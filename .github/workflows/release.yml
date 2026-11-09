@@ -60,13 +60,14 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
-          Compress-Archive -Path target/${{ matrix.target }}/release/${{ matrix.bin }} -DestinationPath ${{ matrix.archive }} -Force
+          Compress-Archive -Path target/${{ matrix.target }}/release/${{ matrix.bin }}, .devclean-ignore -DestinationPath ${{ matrix.archive }} -Force
 
       - name: Package archive (Unix)
         if: matrix.os != 'windows-latest'
         shell: bash
         run: |
-          tar -czvf ${{ matrix.archive }} -C target/${{ matrix.target }}/release ${{ matrix.bin }}
+          cp .devclean-ignore target/${{ matrix.target }}/release/
+          tar -czvf ${{ matrix.archive }} -C target/${{ matrix.target }}/release ${{ matrix.bin }} .devclean-ignore
 
       - name: Upload artifact to release
         uses: softprops/action-gh-release@v2

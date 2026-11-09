@@ -63,9 +63,11 @@ fn test_git_tracked_protection_and_aggregation_veto() {
     kind: devclean::scanner::ProjectKind::GitRepository,
   };
 
+  let external_rules = devclean::filter::ExternalIgnoreRules::default();
   let candidates = devclean::analysis::SafetyEngine::evaluate_project(
     &project,
     false,
+    &external_rules,
     std::time::Duration::from_secs(10),
   )
   .unwrap();

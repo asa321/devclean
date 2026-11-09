@@ -160,6 +160,8 @@ devclean --update --yes
 | `--min-size <SIZE>` | 最小ファイルサイズ（例: 10MB, 1GB） |
 | `--max-size <SIZE>` | 最大ファイルサイズ |
 | `--max-operations <N>` | 実行操作数の上限（超過時はclean全体を中止） |
+| `--config <FILE>` | カスタム保護ルールファイル（`.devclean-ignore`等）の明示指定 |
+| `--no-config` | 外部保護ルール（`.devclean-ignore`）の自動読み込みを無効化 |
 | `--check-update` | GitHub Releases の最新バージョンを確認 |
 | `--update` | 最新バージョンへのセルフアップデートを実行 |
 | `--format <FORMAT>` | `text` または `json` |

@@ -48,9 +48,11 @@ fn test_clean_to_trash_and_toctou_verification() {
     kind: devclean::scanner::ProjectKind::GitRepository,
   };
 
+  let external_rules = devclean::filter::ExternalIgnoreRules::default();
   let candidates = devclean::analysis::SafetyEngine::evaluate_project(
     &project,
     false,
+    &external_rules,
     std::time::Duration::from_secs(10),
   )
   .unwrap();

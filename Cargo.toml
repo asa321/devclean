@@ -1,6 +1,6 @@
 [package]
 name = "devclean"
-version = "0.1.3"
+version = "0.1.6"
 edition = "2021"
 authors = ["devclean team"]
 description = "Safely scan and clean build artifacts, caches, and temporary files to OS trash."

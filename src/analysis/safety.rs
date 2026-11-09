@@ -1,5 +1,5 @@
 use crate::error::{DevCleanError, Result};
-use crate::filter::{SensitiveFilter, SensitiveLevel, SystemFilter};
+use crate::filter::{ExternalIgnoreRules, SensitiveFilter, SensitiveLevel, SystemFilter};
 use crate::git::{GitIgnoreChecker, GitRepository, TrackedPathIndex};
 use crate::scanner::{Project, ProjectKind};
 use std::fs;
@@ -30,6 +30,7 @@ impl SafetyEngine {
   pub fn evaluate_project(
     project: &Project,
     include_sensitive: bool,
+    external_rules: &ExternalIgnoreRules,
     timeout: Duration,
   ) -> Result<Vec<Candidate>> {
     let mut candidates = Vec::new();
@@ -107,6 +108,7 @@ impl SafetyEngine {
             &rel_dir,
             &tracked_index,
             include_sensitive,
+            external_rules,
           );
 
           match can_aggregate {
@@ -148,8 +150,10 @@ impl SafetyEngine {
             continue; // Tracked protection!
           }
 
-          // Check sensitive Level 1
-          if SensitiveFilter::classify(&rel_file, 0) == SensitiveLevel::Level1Strict {
+          // Check sensitive Level 1 & external rules
+          if SensitiveFilter::classify(&rel_file, 0) == SensitiveLevel::Level1Strict
+            || external_rules.matches(&full_path)
+          {
             continue; // Strictly protected
           }
 
@@ -178,6 +182,7 @@ impl SafetyEngine {
     rel_dir: &Path,
     tracked_index: &TrackedPathIndex,
     include_sensitive: bool,
+    external_rules: &ExternalIgnoreRules,
   ) -> Result<bool> {
     // Condition 1: Must not have any tracked file under this directory
     if tracked_index.has_tracked_under(rel_dir) {
@@ -215,6 +220,11 @@ impl SafetyEngine {
 
       // Check nested git repository
       if entry.file_name() == ".git" {
+        return Ok(false);
+      }
+
+      // Check external protection rules inside
+      if external_rules.matches(path) {
         return Ok(false);
       }
 

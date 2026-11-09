@@ -60,7 +60,13 @@ fn main() -> ExitCode {
   let timeout = Duration::from_secs(30);
 
   for project in &projects {
-    match SafetyEngine::evaluate_project(project, cli.include_sensitive, timeout) {
+    let external_rules = if cli.no_config {
+      devclean::filter::ExternalIgnoreRules::default()
+    } else {
+      devclean::filter::ExternalIgnoreRules::load(&project.root, cli.config.as_deref())
+    };
+
+    match SafetyEngine::evaluate_project(project, cli.include_sensitive, &external_rules, timeout) {
       Ok(c) => all_candidates.push(c),
       Err(e) => {
         eprintln!("Error evaluating project {:?}: {e}", project.root);
